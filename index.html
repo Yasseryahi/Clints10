@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل العملاء</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h3, h4 {
+            color: #333;
+        }
+        input, select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .checkbox {
+            text-align: left;
+            margin: 10px 0;
+        }
+        .readonly {
+            background-color: #f3f3f3;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="search-client-btn">ابحث عن عميل</button>
+        <div id="add-client-form">
+            <h3>إضافة عميل جديد</h3>
+            <input type="text" id="client-name" placeholder="اسم العميل">
+            <input type="text" id="captain-name" placeholder="اسم الكابتن">
+            <label>نوع الكورس:</label>
+            <select id="course-type">
+                <option value="She Can">She Can</option>
+                <option value="Premium Plus">Premium Plus</option>
+                <option value="Premium">Premium</option>
+                <option value="Gold">Gold</option>
+                <option value="Silver">Silver</option>
+                <option value="Bronze">Bronze</option>
+                <option value="Single Session">Single Session</option>
+            </select>
+            <label>هل العميل أول مرة يسوق؟</label>
+            <select id="first-time" onchange="showAdditionalQuestions()">
+                <option value="yes">نعم</option>
+                <option value="no">لا</option>
+            </select>
+            <div id="additional-questions" style="display: none;">
+                <label>هل متوفر سيارة؟</label>
+                <select id="has-car">
+                    <option value="yes">نعم</option>
+                    <option value="no">لا</option>
+                </select>
+                <input type="text" id="car-type" placeholder="نوع السيارة">
+                <label>هل لديك رخصة قيادة؟</label>
+                <select id="has-license">
+                    <option value="yes">نعم</option>
+                    <option value="no">لا</option>
+                </select>
+            </div>
+            <button onclick="showTrainingForm()">استمرار</button>
+        </div>
+
+        <div id="training-form" style="display: none;">
+            <h3 id="training-title">تفاصيل التدريب</h3>
+            <label>اسم الكابتن:</label>
+            <input type="text" id="session-captain-name" placeholder="اسم الكابتن">
+            <label>اختر رقم الحصة:</label>
+            <select id="session-number" onchange="showSessionForm()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+            </select>
+            <div id="skills-area">
+                <!-- سيتم عرض النموذج المناسب هنا بناءً على الحصة -->
+            </div>
+            <label>ملاحظات:</label>
+            <textarea id="notes" rows="4" placeholder="أدخل ملاحظاتك هنا..."></textarea>
+            <label>الطرق:</label>
+            <textarea id="roads" rows="2" placeholder="أدخل الطرق التي مشيت فيها..."></textarea>
+            <button onclick="finishSession()">إنهاء الحصة</button>
+        </div>
+    </div>
+
+    <script>
+        function showAdditionalQuestions() {
+            let isFirstTime = document.getElementById("first-time").value;
+            let additionalQuestions = document.getElementById("additional-questions");
+            if (isFirstTime === "no") {
+                additionalQuestions.style.display = "block";
+            } else {
+                additionalQuestions.style.display = "none";
+            }
+        }
+
+        function showTrainingForm() {
+            let isFirstTime = document.getElementById("first-time").value;
+            document.getElementById("training-form").style.display = "block";
+            document.getElementById("training-title").innerText = isFirstTime === "yes" ? "نموذج أكاديمية ياسر يحيى لأول مرة" : "نموذج التقييم";
+            showSessionForm();
+        }
+
+        function showSessionForm() {
+            let sessionNumber = document.getElementById("session-number").value;
+            let skillsArea = document.getElementById("skills-area");
+            skillsArea.innerHTML = "";
+
+            if (sessionNumber == "1" && document.getElementById("first-time").value == "no") {
+                skillsArea.innerHTML = `
+                    <div class="checkbox">
+                        <label><input type="checkbox"> استخدام الإشارات</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox"> الالتفاف يمين ويسار</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox"> الفحص الأولي للعربية</label>
+                    </div>
+                    <!-- أضف باقي المهارات هنا كنقاط تشيك بوكس -->
+                `;
+            } else {
+                skillsArea.innerHTML = "<label>المهارة:</label><input type='text' id='skill' placeholder='أدخل المهارة'>";
+            }
+        }
+
+        function finishSession() {
+            alert("تم إنهاء الحصة وإرسال البيانات بنجاح!");
+            document.getElementById("training-form").style.display = "none";
+        }
+    </script>
+</body>
+</html>
